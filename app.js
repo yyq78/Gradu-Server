@@ -5,7 +5,7 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
-// const cors = require('koa2-cors');
+const cors = require('koa2-cors');
 
 const index = require('./routes/index')
 // const users = require('./routes/users')
@@ -13,7 +13,16 @@ const index = require('./routes/index')
 // error handler
 onerror(app)
 
-// app.use(cors);
+app.use(cors({
+  origin:function (ctx) {
+    return "*";
+  },
+  exposeHeaders:['WWW-Authenticate', 'Server-Authorization'],
+  maxAge: 5,
+  credentials: true,
+  allowMethods: ['GET', 'POST', 'DELETE'],
+  allowHeaders: ['Content-type', 'Authorization', 'Accept'],
+}));
 // middlewares
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
@@ -53,11 +62,12 @@ app.use(async function (ctx, next) {
       let result = jwt.verifyToken();
       // 如果考验通过就next，否则就返回登陆信息不正确
       if (result === 'err') {
-          ctx.body = {
+         return ctx.body = {
             status: 403,
             msg: '登录已过期,请重新登录'
           }
       } else {
+       
          await next();
       }
   } else {

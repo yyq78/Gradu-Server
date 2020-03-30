@@ -8,17 +8,16 @@ class Jwt {
     }
     generateToken(){
         let data = this.data;
-        let created = Math.floor(Date.now()/1000);
-        let cert = fs.readFileSync(path.join(__dirname,'../pem/private_key.pem'));
+        let cert = "token";
         let token = jwt.sign({
             data,
-            exp:created+60*30,
-        },cert,{algorithm:'RS256'});
+        }, cert, { expiresIn:'10h' });
+
         return token;
     }
     verifyToken(){
         let token = this.data;
-        let cert = fs.readFileSync(path.join(__dirname,'../pem/public_key.pem'));
+        let cert = "token";
         let res;
         try{
             let result = jwt.verify(token,cert,{algorithms:['RS256']})||{};

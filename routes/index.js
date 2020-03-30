@@ -4,7 +4,6 @@ const JwtUtil = require('../public/utils/jwt');
 // 用户登录接口
 router.post('/login', async (ctx, next)=> {
   const user = ctx.request.body;  
-
   const userInfo = await userService.validateUser(user);
   if(userInfo.length === 0){
       return ctx.body = {
@@ -14,8 +13,7 @@ router.post('/login', async (ctx, next)=> {
   }else{
       const password = userInfo[0].password;
       if(password === user.password) {
-          let _id = userInfo.id.toString();
-          let jwt = new JwtUtil(_id);
+          let jwt = new JwtUtil(userInfo[0]);
           let token = jwt.generateToken();
           return ctx.body = {
             msg: "成功登录",
@@ -30,4 +28,18 @@ router.post('/login', async (ctx, next)=> {
       }
   }
 });
+//用户注册接口
+router.post('/register',async(ctx)=>{
+  const signInUser = ctx.request.body;
+  const result = await userService.RegisterUser(signInUser);
+  console.log(result);
+  return ctx.body = {
+  }
+})
+
+router.get('/test', async ctx => {
+  return ctx.body = {
+    message: '你好啥',
+  }
+})
 module.exports = router
