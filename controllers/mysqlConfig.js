@@ -34,6 +34,35 @@ let allServices = {
     RegisterUser:function(user){
         let _sql = `insert into Users (username,password) values ('${user.signAccount}','${user.signPass}');`
         return allServices.query(_sql);
+    },
+    addUseRequests:function(form){
+        let _sql = `insert into UseRequests 
+        (userId,userName,userDepartment,deviceCategoryId,useDescription,useDateTime) 
+        values 
+        (${form.personId},'${form.personName}','${form.personDepartment}',${form.deviceCategoryId},'${form.useAim}','${form.dateTime}');`
+
+        return allServices.query(_sql);
+    },
+    getDeviceCategoryList:function(){
+        let _sql = `select * from deviceCategoryInfo`;
+        return allServices.query(_sql);
+    },
+    addReturnRequests:function(form){
+        let _sql = `insert into ReturnRequests 
+        (userId,userName,userDepartment,deviceCategoryId,deviceDamage,deviceDamageDes,deviceFeedback,returnDateTime) 
+        values 
+        (${form.personId},'${form.personName}','${form.personDepartment}',${form.deviceCategoryId},'${form.isDamage}','${form.damageDes}','${form.feedback}','${form.dateTime}');`
+        return allServices.query(_sql);
+    },
+    //查询所有使用申请
+    getUseRequests:function(userId){
+        let _sql = `select * from UseRequests where userId = ${userId};`;
+        return allServices.query(_sql);
+    },
+    //查询所有返回申请
+    getReturnRequests:function(userId){
+        let _sql = `select * from ReturnRequests where userId = ${userId};`;
+        return allServices.query(_sql);
     }
 }
 module.exports = allServices;

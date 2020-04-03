@@ -32,14 +32,48 @@ router.post('/login', async (ctx, next)=> {
 router.post('/register',async(ctx)=>{
   const signInUser = ctx.request.body;
   const result = await userService.RegisterUser(signInUser);
-  console.log(result);
   return ctx.body = {
+    msg:result,
   }
 })
 
-router.get('/test', async ctx => {
+router.post('/addUseRequest', async ctx => {
+  const form = ctx.request.body;
+  const result = await userService.addUseRequests(form);
   return ctx.body = {
-    message: '你好啥',
+    msg: result,
+  }
+});
+
+router.post('/addReturnRequest', async ctx => {
+  const form = ctx.request.body;
+  const result = await userService.addReturnRequests(form);
+  return ctx.body = {
+    msg: result,
+  }
+});
+
+router.get('/getDeviceCategoryList',async ctx =>{
+
+  const result = await userService.getDeviceCategoryList();
+  return ctx.body = {
+    data:result
+  }
+});
+
+router.get('/getUseRequests',async ctx =>{
+  const userId = ctx.query;
+  const result = await userService.getUseRequests(userId);
+  return ctx.body = {
+    data:result
+  }
+});
+
+router.get('/getReturnRequests',async ctx =>{
+  const userId = ctx.query;
+  const result = await userService.getReturnRequests(userId);
+  return ctx.body = {
+    data:result
   }
 })
 module.exports = router
