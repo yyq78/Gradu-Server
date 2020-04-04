@@ -3,18 +3,21 @@ const userService = require('../controllers/mysqlConfig');
 const JwtUtil = require('../public/utils/jwt');
 // 用户登录接口
 router.post('/login', async (ctx, next)=> {
-  const user = ctx.request.body;  
-  const userInfo = await userService.validateUser(user);
+  const form = ctx.request.body;  
+  const userInfo = await userService.validateUser(form);
   if(userInfo.length === 0){
       return ctx.body = {
           msg: "不存在该用户",
           error: -1,
       }
   }else{
-      const password = userInfo[0].password;
-      if(password === user.password) {
-          let jwt = new JwtUtil(userInfo[0]);
+      let [user] = userInfo;
+      const password = form.password;
+      if(password === user.psw) {
+          let jwt = new JwtUtil(user);
           let token = jwt.generateToken();
+          //登录成功后，为用户设置session
+          ctx.session.userId = user.userId;
           return ctx.body = {
             msg: "成功登录",
             error: 0,
@@ -28,14 +31,7 @@ router.post('/login', async (ctx, next)=> {
       }
   }
 });
-//用户注册接口
-router.post('/register',async(ctx)=>{
-  const signInUser = ctx.request.body;
-  const result = await userService.RegisterUser(signInUser);
-  return ctx.body = {
-    msg:result,
-  }
-})
+
 
 router.post('/addUseRequest', async ctx => {
   const form = ctx.request.body;
@@ -62,7 +58,7 @@ router.get('/getDeviceCategoryList',async ctx =>{
 });
 
 router.get('/getUseRequests',async ctx =>{
-  const userId = ctx.query;
+  let userId = ctx.query.userId;
   const result = await userService.getUseRequests(userId);
   return ctx.body = {
     data:result
@@ -70,7 +66,7 @@ router.get('/getUseRequests',async ctx =>{
 });
 
 router.get('/getReturnRequests',async ctx =>{
-  const userId = ctx.query;
+  let userId = ctx.query.userId;
   const result = await userService.getReturnRequests(userId);
   return ctx.body = {
     data:result

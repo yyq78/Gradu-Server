@@ -28,11 +28,7 @@ let allServices = {
         })
     },
     validateUser:function(user){
-        let _sql = `select * from Users where username = "${user.account}";`;
-        return allServices.query(_sql);
-    },
-    RegisterUser:function(user){
-        let _sql = `insert into Users (username,password) values ('${user.signAccount}','${user.signPass}');`
+        let _sql = `select * from Users where userId = "${user.account}";`;
         return allServices.query(_sql);
     },
     addUseRequests:function(form){

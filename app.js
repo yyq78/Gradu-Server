@@ -6,8 +6,23 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const cors = require('koa2-cors');
-
 const index = require('./routes/index')
+const session = require('koa-session');
+const CONFIG = {
+  key: 'koa:sess', /** (string) cookie key (default is koa:sess) cookie 的Name */
+  /** (number || 'session') maxAge in ms (default is 1 days) */
+  /** 'session' will result in a cookie that expires when session/browser is closed */
+  /** Warning: If a session cookie is stolen, this cookie will never expire */
+  maxAge: 86400000, /** cookie 的过期时间 */
+  autoCommit: true, /** (boolean) automatically commit headers (default true) */
+  overwrite: true, /** (boolean) can overwrite or not (default true) */
+  httpOnly: true, /** (boolean) httpOnly or not (default true) */
+  signed: true, /** (boolean) signed or not (default true) */
+  rolling: false, /** (boolean) Force a session identifier cookie to be set on every response. The expiration is reset to the original maxAge, resetting the expiration countdown. (default is false) */
+  renew: false, /** (boolean) renew session when session is nearly expired, so we can always keep user logged in. (default is false)*/
+ }
+ app.keys = ['login secret'] // 加密密钥
+ app.use(session(CONFIG, app));
 // const users = require('./routes/users')
 
 // error handler
@@ -56,7 +71,7 @@ app.use(async function (ctx, next) {
   // 我这里知识把登陆和注册请求去掉了，其他的多有请求都需要进行token校验 
   let url = ctx.url;
   url = url.split('?');
-  if (url[0] != '/login' && url[0] != '/register') {
+  if (url[0] != '/login') {
       let token = ctx.request.header.authorization;
       let jwt = new JwtUtil(token);
       let result = jwt.verifyToken();
@@ -67,7 +82,6 @@ app.use(async function (ctx, next) {
             msg: '登录已过期,请重新登录'
           }
       } else {
-       
          await next();
       }
   } else {
