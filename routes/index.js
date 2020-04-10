@@ -16,12 +16,11 @@ router.post('/login', async (ctx, next)=> {
       if(password === user.psw) {
           let jwt = new JwtUtil(user);
           let token = jwt.generateToken();
-          //登录成功后，为用户设置session
-          ctx.session.userId = user.userId;
           return ctx.body = {
             msg: "成功登录",
             error: 0,
-            token:token
+            token:token,
+            permissionId:user.permissionId
           }
       }else {
        return ctx.body = {
@@ -71,5 +70,36 @@ router.get('/getReturnRequests',async ctx =>{
   return ctx.body = {
     data:result
   }
-})
+});
+router.get('/getAllDevices',async ctx =>{
+  const result = await userService.getAllDevices();
+  return ctx.body = {
+    data:result
+  }
+});
+router.get('/getAllRentedDevices',async ctx=>{
+  const result = await userService.getAllRentedDevices();
+  return ctx.body = {
+    data:result
+  }
+});
+router.get('/getAllUseRequests',async ctx =>{
+  const result = await userService.getAllUseRequests();
+  return ctx.body = {
+    data:result
+  }
+});
+router.get('getAllReturnRequests',async ctx =>{
+  const result = await userService.getAllRentedDevices();
+  return ctx.body = {
+    data:result
+  }
+});
+router.post('/reduceUseApprove',async ctx=>{
+  const data = ctx.request.body;
+  const result = await userService.reduceUseApprove(data);
+  return ctx.body = {
+    data:result
+  }
+});
 module.exports = router
