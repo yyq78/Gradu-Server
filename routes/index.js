@@ -89,8 +89,8 @@ router.get('/getAllUseRequests',async ctx =>{
     data:result
   }
 });
-router.get('getAllReturnRequests',async ctx =>{
-  const result = await userService.getAllRentedDevices();
+router.get('/getAllReturnRequests',async ctx =>{
+  const result = await userService.getAllReturnRequests();
   return ctx.body = {
     data:result
   }

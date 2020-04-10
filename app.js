@@ -6,8 +6,11 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const cors = require('koa2-cors');
-const index = require('./routes/index')
 const session = require('koa-session');
+
+const index = require('./routes/index')
+const JwtUtil = require('./public/utils/jwt');
+
 const CONFIG = {
   key: 'koa:sess', /** (string) cookie key (default is koa:sess) cookie 的Name */
   /** (number || 'session') maxAge in ms (default is 1 days) */

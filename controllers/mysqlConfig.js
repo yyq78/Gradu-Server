@@ -84,7 +84,8 @@ let allServices = {
     },
     //删除一条使用申请，增加一条租借设备
     reduceUseApprove:function(data){
-        let _sql = `delete from UseRequests where requestId = ${data.requestId} ;insert into rentedDevices (userId,userName,userDepartment,deviceCategoryName,useDescription,useDateTime) values (${data.userId},'${data.userName}','${data.userDepartment}','${data.deviceCategoryName}','${data.useDescription}','${data.useDateTime}');`;
+        let _sql = `delete from UseRequests where requestId = ${data.requestId};
+        insert into rentedDevices (userId,userName,userDepartment,deviceCategoryName,useDescription,useDateTime) values (${data.userId},'${data.userName}','${data.userDepartment}','${data.deviceCategoryName}','${data.useDescription}','${data.useDateTime}');`;
         return allServices.query(_sql); 
     }
 }
