@@ -70,25 +70,25 @@ app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)
 });
 
-app.use(async function (ctx, next) {
-  // 我这里知识把登陆和注册请求去掉了，其他的多有请求都需要进行token校验 
-  let url = ctx.url;
-  url = url.split('?');
-  if (url[0] != '/login') {
-      let token = ctx.request.header.authorization;
-      let jwt = new JwtUtil(token);
-      let result = jwt.verifyToken();
-      // 如果考验通过就next，否则就返回登陆信息不正确
-      if (result === 'err') {
-         return ctx.body = {
-            status: 403,
-            msg: '登录已过期,请重新登录'
-          }
-      } else {
-         await next();
-      }
-  } else {
-      await next();
-  }
-});
+// app.use(async function (ctx, next) {
+//   // 我这里知识把登陆和注册请求去掉了，其他的多有请求都需要进行token校验 
+//   let url = ctx.url;
+//   url = url.split('?');
+//   if (url[0] != '/login') {
+//       let token = ctx.request.header.authorization;
+//       let jwt = new JwtUtil(token);
+//       let result = jwt.verifyToken();
+//       // 如果考验通过就next，否则就返回登陆信息不正确
+//       if (result === 'err') {
+//          return ctx.body = {
+//             status: 403,
+//             msg: '登录已过期,请重新登录'
+//           }
+//       } else {
+//          await next();
+//       }
+//   } else {
+//       await next();
+//   }
+// });
 module.exports = app

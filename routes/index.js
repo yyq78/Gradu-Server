@@ -102,4 +102,43 @@ router.post('/reduceUseApprove',async ctx=>{
     data:result
   }
 });
+router.get('/getDevicesStorage',async ctx =>{
+  const result = await userService.getDevicesStorage();
+  return ctx.body = {
+    data:result
+  }
+});
+router.get('/getCountofRentedDevices',async ctx=>{
+  const result = await userService.getCountofRentedDevices();
+  return ctx.body = {
+    data:result
+  }
+});
+router.get('/getAllReturnedDevices',async ctx=>{
+  const result =await userService.getAllReturnedDevices();
+  return ctx.body = {
+    data:result
+  }
+});
+router.post('/reduceReturnRequests',async ctx=>{
+  const data = ctx.request.body;
+  const result = await userService.reduceReturnRequests(data);
+  return ctx.body = {
+    data:result
+  }
+});
+router.post('/addDevices',async ctx=>{
+  const data = ctx.request.body;
+  const result = await userService.addDevices(data);
+  return ctx.body = {
+    data:result
+  }
+});
+router.post('/modifySomeDevice',async ctx=>{
+  const data = ctx.request.body;
+  const result = await userService.modifySomeDevice(data);
+  return ctx.body = {
+    data:result
+  }
+})
 module.exports = router
