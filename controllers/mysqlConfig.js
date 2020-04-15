@@ -163,15 +163,20 @@ let allServices = {
     },
     //添加不同种类设备
     addDevices:function(data){
-        let _sql = `insert into devices (deviceName,devicePrice,time,count) values ('${data.deviceName}',${data.devicePrice},'${data.time}',${data.count})`;
-        return allServices.query(_sql);
+        let _sql1 =  `select * from devices where deviceName = '${data.deviceName}'`;
+        return allServices.query(_sql1).then((res)=>{
+            if(res.length>0){
+                return false;
+            }else{
+                let _sql = `insert into devices (deviceName,devicePrice,time,count) values ('${data.deviceName}',${data.devicePrice},'${data.time}',${data.count})`;
+                return allServices.query(_sql);
+            }
+        })
     },
     //添加、删除某类设备数量
     modifySomeDevice:function(row){
         let _sql = `update devices set count = ${row.count} where id = ${row.id};`;
         return allServices.query(_sql);
     }
-    
-
 }
 module.exports = allServices;

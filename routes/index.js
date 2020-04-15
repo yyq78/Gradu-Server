@@ -130,8 +130,14 @@ router.post('/reduceReturnRequests',async ctx=>{
 router.post('/addDevices',async ctx=>{
   const data = ctx.request.body;
   const result = await userService.addDevices(data);
-  return ctx.body = {
-    data:result
+  if(result){
+    return ctx.body = {
+      data:result
+    }
+  }else{
+    return ctx.body = {
+      error:'必须是新的设备名，才能添加'
+    }
   }
 });
 router.post('/modifySomeDevice',async ctx=>{
