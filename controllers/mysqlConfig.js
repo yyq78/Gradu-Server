@@ -173,9 +173,14 @@ let allServices = {
             }
         })
     },
-    //添加、删除某类设备数量
+    //修改设备
     modifySomeDevice:function(row){
-        let _sql = `update devices set count = ${row.count} where id = ${row.id};`;
+        let _sql = `update devices set deviceName = '${row.deviceName}',devicePrice = ${row.devicePrice},count = ${row.count},time = '${row.time}' where id = ${row.id};`;
+        return allServices.query(_sql);
+    },
+    //删除设备
+    deleteSomeDevice:function(row){
+        let _sql = `delete from devices where id = ${row.id};`;
         return allServices.query(_sql);
     }
 }

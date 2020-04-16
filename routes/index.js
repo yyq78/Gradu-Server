@@ -146,5 +146,12 @@ router.post('/modifySomeDevice',async ctx=>{
   return ctx.body = {
     data:result
   }
+});
+router.post('/deleteSomeDevice',async ctx =>{
+  const data = ctx.request.body;
+  const result = await userService.deleteSomeDevice(data);
+  return ctx.body = {
+    data:result
+  }
 })
 module.exports = router
