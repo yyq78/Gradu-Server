@@ -85,9 +85,16 @@ router.get('/getAllDevices',async ctx =>{
   }
 });
 router.get('/getAllRentedDevices',async ctx=>{
-  const result = await userService.getAllRentedDevices();
+  const {currentPage,pageSize,search} = ctx.query;
+  const result = await userService.getAllRentedDevices(Number(currentPage),Number(pageSize),search);
+  const res_total = await userService.getAllRentedDevicesCount(search);
+  const total = res_total[0]['count(*)'];
   return ctx.body = {
-    data:result
+    data:result,
+    total:total,
+    page:Number(currentPage),
+    size:Number(pageSize),
+    totalPage:Math.ceil(total/pageSize)
   }
 });
 router.get('/getAllUseRequests',async ctx =>{

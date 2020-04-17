@@ -118,22 +118,34 @@ let allServices = {
     getAllDevices:function(page,size,search){
         let _sql = `select * from devices `;
         if(search){
-            _sql+=` where deviceName like '%${search}%'`
+            _sql+=` where deviceName like '%${search}%' or time like '%${search}%'`
         }
         _sql+=` limit ${(page-1)*size},${size};`
         return allServices.query(_sql);
     },
-    //查询所有设备
+    //查询所有设备总数
     getAllDevicesCount:function(search){
         let _sql = `select count(*) from devices`;
         if(search){
-            _sql+=` where deviceName like '%${search}%';`
+            _sql+=` where deviceName like '%${search}%' or time like '%${search}%';`
         }
         return allServices.query(_sql);
     },
     //查询所有租借设备
-    getAllRentedDevices:function(){
-        let _sql = `select * from rentedDevices;`;
+    getAllRentedDevices:function(page,size,search){
+        let _sql = `select * from rentedDevices`;
+        if(search){
+            _sql+=` where deviceCategoryName like '%${search}%' or userName like '%${search}%' or userId like '%${Number(search)}%' or useDescription like '%${search}%'`
+        }
+        _sql+=` limit ${(page-1)*size},${size};`
+        return allServices.query(_sql);
+    },
+    //查询所有租借设备总数
+    getAllRentedDevicesCount:function(search){
+        let _sql = `select count(*) from rentedDevices`;
+        if(search){
+            _sql+=` where deviceCategoryName like '%${search}%' or userName like '%${search}%' or userId like '%${Number(search)}%' or useDescription like '%${search}%'`
+        }
         return allServices.query(_sql);
     },
     //查询所有归还设备
