@@ -115,8 +115,20 @@ let allServices = {
         return allServices.query(_sql);
     },
     //查询所有设备
-    getAllDevices:function(){
-        let _sql = `select * from devices;`;
+    getAllDevices:function(page,size,search){
+        let _sql = `select * from devices `;
+        if(search){
+            _sql+=` where deviceName like '%${search}%'`
+        }
+        _sql+=` limit ${(page-1)*size},${size};`
+        return allServices.query(_sql);
+    },
+    //查询所有设备
+    getAllDevicesCount:function(search){
+        let _sql = `select count(*) from devices`;
+        if(search){
+            _sql+=` where deviceName like '%${search}%';`
+        }
         return allServices.query(_sql);
     },
     //查询所有租借设备
