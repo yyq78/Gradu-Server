@@ -85,9 +85,30 @@ router.get('/getAllDevices',async ctx =>{
   }
 });
 router.get('/getAllRentedDevices',async ctx=>{
+  if(ctx.query){
+    const {currentPage,pageSize,search} = ctx.query;
+    const result = await userService.getAllRentedDevices(Number(currentPage),Number(pageSize),search);
+    const res_total = await userService.getAllRentedDevicesCount(search);
+    const total = res_total[0]['count(*)'];
+    return ctx.body = {
+      data:result,
+      total:total,
+      page:Number(currentPage),
+      size:Number(pageSize),
+      totalPage:Math.ceil(total/pageSize)
+    }
+  }else{
+    const result = await userService.getAllRentedDevices();
+    return ctx.body = {
+      data:result
+    }
+  }
+
+});
+router.get('/getAllUseRequests',async ctx =>{
   const {currentPage,pageSize,search} = ctx.query;
-  const result = await userService.getAllRentedDevices(Number(currentPage),Number(pageSize),search);
-  const res_total = await userService.getAllRentedDevicesCount(search);
+  const result = await userService.getAllUseRequests(Number(currentPage),Number(pageSize),search);
+  const res_total = await userService.getAllUseRequestsCount(search);
   const total = res_total[0]['count(*)'];
   return ctx.body = {
     data:result,
@@ -97,16 +118,17 @@ router.get('/getAllRentedDevices',async ctx=>{
     totalPage:Math.ceil(total/pageSize)
   }
 });
-router.get('/getAllUseRequests',async ctx =>{
-  const result = await userService.getAllUseRequests();
-  return ctx.body = {
-    data:result
-  }
-});
 router.get('/getAllReturnRequests',async ctx =>{
-  const result = await userService.getAllReturnRequests();
+  const {currentPage,pageSize,search} = ctx.query;
+  const result = await userService.getAllReturnRequests(Number(currentPage),Number(pageSize),search);
+  const res_total = await userService.getAllReturnRequestsCount(search);
+  const total = res_total[0]['count(*)'];
   return ctx.body = {
-    data:result
+    data:result,
+    total:total,
+    page:Number(currentPage),
+    size:Number(pageSize),
+    totalPage:Math.ceil(total/pageSize)
   }
 });
 router.post('/reduceUseApprove',async ctx=>{
@@ -129,17 +151,25 @@ router.get('/getCountofRentedDevices',async ctx=>{
   }
 });
 router.get('/getAllReturnedDevices',async ctx=>{
-  const {currentPage,pageSize,search} = ctx.query;
-  const result = await userService.getAllReturnedDevices(Number(currentPage),Number(pageSize),search);
-  const res_total = await userService.getAllReturnedDevicesCount(search);
-  const total = res_total[0]['count(*)'];
-  return ctx.body = {
-    data:result,
-    total:total,
-    page:Number(currentPage),
-    size:Number(pageSize),
-    totalPage:Math.ceil(total/pageSize)
+  if(ctx.query){
+    const {currentPage,pageSize,search} = ctx.query;
+    const result = await userService.getAllReturnedDevices(Number(currentPage),Number(pageSize),search);
+    const res_total = await userService.getAllReturnedDevicesCount(search);
+    const total = res_total[0]['count(*)'];
+    return ctx.body = {
+      data:result,
+      total:total,
+      page:Number(currentPage),
+      size:Number(pageSize),
+      totalPage:Math.ceil(total/pageSize)
+    }
+  }else{
+    const result = await userService.getAllReturnedDevices();
+    return ctx.body = {
+      data:result
+    }
   }
+
 });
 router.post('/reduceReturnRequests',async ctx=>{
   const data = ctx.request.body;
