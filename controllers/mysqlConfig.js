@@ -144,13 +144,25 @@ let allServices = {
     getAllRentedDevicesCount:function(search){
         let _sql = `select count(*) from rentedDevices`;
         if(search){
-            _sql+=` where deviceCategoryName like '%${search}%' or userName like '%${search}%' or userId like '%${Number(search)}%' or useDescription like '%${search}%'`
+            _sql+=` where deviceCategoryName like '%${search}%' or userName like '%${search}%' or userId like '%${Number(search)}%' or useDescription like '%${search}%';`
         }
         return allServices.query(_sql);
     },
     //查询所有归还设备
-    getAllReturnedDevices:function(){
-        let _sql = `select * from returnedDevices;`;
+    getAllReturnedDevices:function(page,size,search){
+        let _sql = `select * from returnedDevices`;
+        if(search){
+            _sql+=` where deviceCategoryName like '%${search}%' or userDepartment like '%${search}%' or userId like '%${Number(search)}%' or deviceDamage like '%${search}%' or deviceDamageDes like '%${search}%' or deviceFeedback like '%${search}%'`
+        }
+        _sql+=` limit ${(page-1)*size},${size};`
+        return allServices.query(_sql);
+    },
+    //查询所有归还设备总数
+    getAllReturnedDevicesCount:function(search){
+        let _sql = `select count(*) from returnedDevices`;
+        if(search){
+            _sql+=` where deviceCategoryName like '%${search}%' or userDepartment like '%${search}%' or userId like '%${Number(search)}%' or deviceDamage like '%${search}%' or deviceDamageDes like '%${search}%' or deviceFeedback like '%${Number(search)}%';`
+        }
         return allServices.query(_sql);
     },
     //查询所有出库（使用）申请

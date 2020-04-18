@@ -129,9 +129,16 @@ router.get('/getCountofRentedDevices',async ctx=>{
   }
 });
 router.get('/getAllReturnedDevices',async ctx=>{
-  const result =await userService.getAllReturnedDevices();
+  const {currentPage,pageSize,search} = ctx.query;
+  const result = await userService.getAllReturnedDevices(Number(currentPage),Number(pageSize),search);
+  const res_total = await userService.getAllReturnedDevicesCount(search);
+  const total = res_total[0]['count(*)'];
   return ctx.body = {
-    data:result
+    data:result,
+    total:total,
+    page:Number(currentPage),
+    size:Number(pageSize),
+    totalPage:Math.ceil(total/pageSize)
   }
 });
 router.post('/reduceReturnRequests',async ctx=>{
