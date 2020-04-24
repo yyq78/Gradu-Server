@@ -84,10 +84,10 @@ let allServices = {
         return allServices.query(_sql);
     },
     //添加使用申请
-    addUseRequests:function(form){
-        let _sql = `insert into UseRequests (userId,userName,userDepartment,deviceCategoryName,useDescription,useDateTime) 
+    addUseRequests:function(data){
+        let _sql = `insert into UseRequests (userId,userName,userDepartment,deviceCategoryName,useDescription,useDateTime,status) 
         values 
-        (${form.personId},'${form.personName}','${form.personDepartment}','${form.deviceCategoryName}','${form.useAim}','${form.dateTime}');`
+        (${data.personId},'${data.personName}','${data.personDepartment}','${data.deviceCategoryName}','${data.useAim}','${data.dateTime}',${data.status});`
 
         return allServices.query(_sql);
     },
@@ -99,19 +99,9 @@ let allServices = {
     //添加归还申请
     addReturnRequests:function(form){
         let _sql = `insert into ReturnRequests 
-        (userId,userName,userDepartment,deviceCategoryName,deviceDamage,deviceDamageDes,deviceFeedback,returnDateTime) 
+        (userId,userName,userDepartment,deviceCategoryName,deviceDamage,deviceDamageDes,deviceFeedback,returnDateTime,status) 
         values 
-        (${form.personId},'${form.personName}','${form.personDepartment}','${form.deviceCategoryName}','${form.isDamage}','${form.damageDes}','${form.feedback}','${form.dateTime}');`
-        return allServices.query(_sql);
-    },
-    //查询个人所有使用申请
-    getUseRequests:function(userId){
-        let _sql = `select * from UseRequests where userId = ${userId};`;
-        return allServices.query(_sql);
-    },
-    //查询个人所有返回申请
-    getReturnRequests:function(userId){
-        let _sql = `select * from ReturnRequests where userId = ${userId};`;
+        (${form.personId},'${form.personName}','${form.personDepartment}','${form.deviceCategoryName}','${form.isDamage}','${form.damageDes}','${form.feedback}','${form.dateTime}',${form.status});`
         return allServices.query(_sql);
     },
     //查询所有设备
@@ -133,9 +123,9 @@ let allServices = {
     },
     //查询所有租借设备
     getAllRentedDevices:function(page,size,search){
-        let _sql = `select * from rentedDevices`;
+        let _sql = `select * from UseRequests where status = 1`;
         if(search){
-            _sql+=` where deviceCategoryName like '%${search}%' or userName like '%${search}%' or userId like '%${Number(search)}%' or useDescription like '%${search}%' or userDepartment like '%${search}%'`
+            _sql+=` and deviceCategoryName like '%${search}%' or userName like '%${search}%' or userId like '%${Number(search)}%' or useDescription like '%${search}%' or userDepartment like '%${search}%'`
         }
         if(page&&size){
             _sql+=` limit ${(page-1)*size},${size}`
@@ -145,17 +135,17 @@ let allServices = {
     },
     //查询所有租借设备总数
     getAllRentedDevicesCount:function(search){
-        let _sql = `select count(*) from rentedDevices`;
+        let _sql = `select count(*) from UseRequests where status = 1`;
         if(search){
-            _sql+=` where deviceCategoryName like '%${search}%' or userName like '%${search}%' or userId like '%${Number(search)}%' or useDescription like '%${search}%' or userDepartment like '%${search}%';`
+            _sql+=` and deviceCategoryName like '%${search}%' or userName like '%${search}%' or userId like '%${Number(search)}%' or useDescription like '%${search}%' or userDepartment like '%${search}%';`
         }
         return allServices.query(_sql);
     },
     //查询所有归还设备
     getAllReturnedDevices:function(page,size,search){
-        let _sql = `select * from returnedDevices`;
+        let _sql = `select * from ReturnRequests where status = 1`;
         if(search){
-            _sql+=` where deviceCategoryName like '%${search}%' or userDepartment like '%${search}%' or userId like '%${Number(search)}%' or deviceDamage like '%${search}%' or deviceDamageDes like '%${search}%' or deviceFeedback like '%${search}%'`
+            _sql+=` and deviceCategoryName like '%${search}%' or userDepartment like '%${search}%' or userId like '%${Number(search)}%' or deviceDamage like '%${search}%' or deviceDamageDes like '%${search}%' or deviceFeedback like '%${search}%'`
         }
         if(page&&size){
             _sql+=` limit ${(page-1)*size},${size}`
@@ -165,54 +155,59 @@ let allServices = {
     },
     //查询所有归还设备总数
     getAllReturnedDevicesCount:function(search){
-        let _sql = `select count(*) from returnedDevices`;
+        let _sql = `select count(*) from ReturnRequests where status = 1`;
         if(search){
-            _sql+=` where deviceCategoryName like '%${search}%' or userDepartment like '%${search}%' or userId like '%${Number(search)}%' or deviceDamage like '%${search}%' or deviceDamageDes like '%${search}%' or deviceFeedback like '%${Number(search)}%';`
+            _sql+=` and deviceCategoryName like '%${search}%' or userDepartment like '%${search}%' or userId like '%${Number(search)}%' or deviceDamage like '%${search}%' or deviceDamageDes like '%${search}%' or deviceFeedback like '%${Number(search)}%';`
         }
         return allServices.query(_sql);
     },
     //查询所有出库（使用）申请
     getAllUseRequests:function(page,size,search){
-        let _sql = `select * from UseRequests`;
+        let _sql = `select * from UseRequests where status = 0`;
         if(search){
-            _sql+=` where deviceCategoryName like '%${search}%' or userName like '%${search}%' or userId like '%${Number(search)}%' or useDescription like '%${search}%' or userDepartment like '%${search}%'`
+            _sql+=` and deviceCategoryName like '%${search}%' or userName like '%${search}%' or userId like '%${Number(search)}%' or useDescription like '%${search}%' or userDepartment like '%${search}%'`
         }
         _sql+=` limit ${(page-1)*size},${size};`
         return allServices.query(_sql);
     },
     getAllUseRequestsCount:function(search){
-        let _sql = `select count(*) from UseRequests`;
+        let _sql = `select count(*) from UseRequests where status = 0`;
         if(search){
-            _sql+=` where deviceCategoryName like '%${search}%' or userName like '%${search}%' or userId like '%${Number(search)}%' or useDescription like '%${search}%' or userDepartment like '%${search}%'`
+            _sql+=` and deviceCategoryName like '%${search}%' or userName like '%${search}%' or userId like '%${Number(search)}%' or useDescription like '%${search}%' or userDepartment like '%${search}%'`
         }
         return allServices.query(_sql);
     },
     //查询所有入库（归还）申请
     getAllReturnRequests:function(page,size,search){
-        let _sql = `select * from ReturnRequests`;
+        let _sql = `select * from ReturnRequests where status = 0`;
         if(search){
-            _sql+=` where deviceCategoryName like '%${search}%' or userDepartment like '%${search}%' or userId like '%${Number(search)}%' or deviceDamage like '%${search}%' or deviceDamageDes like '%${search}%' or deviceFeedback like '%${search}%'`
+            _sql+=` and deviceCategoryName like '%${search}%' or userDepartment like '%${search}%' or userId like '%${Number(search)}%' or deviceDamage like '%${search}%' or deviceDamageDes like '%${search}%' or deviceFeedback like '%${search}%'`
         }
         _sql+=` limit ${(page-1)*size},${size};`
         return allServices.query(_sql);
     },
     getAllReturnRequestsCount:function(search){
-        let _sql = `select count(*) from ReturnRequests`;
+        let _sql = `select count(*) from ReturnRequests where status = 0`;
         if(search){
             _sql+=` where deviceCategoryName like '%${search}%' or userDepartment like '%${search}%' or userId like '%${Number(search)}%' or deviceDamage like '%${search}%' or deviceDamageDes like '%${search}%' or deviceFeedback like '%${search}%'`
         }
         return allServices.query(_sql);
     },
-    //审批借用申请。删除一条使用申请，增加一条租借设备
+    //审批同意借用申请。更新使用申请状态，该设备数量减一
     reduceUseApprove:function(data){
-        let _sql1 = `delete from UseRequests where requestId = ${data.requestId};`;
-        let _sql2 = `insert into rentedDevices (userId,userName,userDepartment,deviceCategoryName,useDescription,useDateTime) values (${data.userId},'${data.userName}','${data.userDepartment}','${data.deviceCategoryName}','${data.useDescription}','${data.useDateTime}');`;
+        let _sql1 = `update UseRequests set status = ${1} where requestId = ${data.requestId}`;
+        let _sql2 = `update devices set count = count-1 where deviceName = '${data.deviceCategoryName}'`;
         return allServices.transaction([_sql1,_sql2]); 
     },
-    //审批归还申请。
+    //拒绝申请
+    refuseUseApprove:function(data){
+        let _sql = `update UseRequests set status = ${-1},reason = '${data.reason}' where requestId = ${data.requestId}`;
+        return allServices.query(_sql); 
+    },
+    //审批同意归还申请。更新使用申请状态，该设备数量加一
     reduceReturnRequests:function(data){
-        let _sql1 = `delete from ReturnRequests where requestId = ${data.requestId};`;
-        let _sql2 = `insert into returnedDevices (userId,userName,userDepartment,deviceCategoryName,deviceDamage,deviceDamageDes,deviceFeedback,returnDateTime) values (${data.userId},'${data.userName}','${data.userDepartment}','${data.deviceCategoryName}','${data.deviceDamage}','${data.deviceDamageDes}','${data.deviceFeedback}','${data.returnDateTime}');`;
+        let _sql1 = `update ReturnRequests set status = ${1} where requestId = ${data.requestId}`;
+        let _sql2 = `update devices set count = count+1 where deviceName = '${data.deviceCategoryName}'`;
         return allServices.transaction([_sql1,_sql2]); 
     },
     //echarts获取库存信息
@@ -222,7 +217,7 @@ let allServices = {
     },
     //获取借出设备情况（不同种类设备的数量）
     getCountofRentedDevices:function(){
-        let _sql = `SELECT deviceCategoryName,COUNT(*) as count FROM rentedDevices group by deviceCategoryName;`;
+        let _sql = `SELECT deviceCategoryName,COUNT(*) as count FROM UseRequests where status = 1 group by deviceCategoryName;`;
         return allServices.query(_sql);
     },
     //添加不同种类设备
@@ -245,6 +240,62 @@ let allServices = {
     //删除设备
     deleteSomeDevice:function(row){
         let _sql = `delete from devices where id = ${row.id};`;
+        return allServices.query(_sql);
+    },
+    //获得员工基本信息
+    getUsersBasic:function(id){
+        let _sql = `select * from usersBasic where userId = ${id}`;
+        return allServices.query(_sql);
+    },
+
+    //普通员工查看申请记录，使用申请状态
+    getStaffUseRequests:function(id,page,size,search){
+        let _sql = `select * from UseRequests where userId = ${id}`;
+        if(search){
+            _sql+=` and deviceCategoryName like '%${search}%' or useDateTime like '%${search}%' or useDescription like '%${search}%'`
+        }
+        if(page&&size){
+            _sql+=` limit ${(page-1)*size},${size}`
+        }
+        _sql+=`;`;
+        return allServices.query(_sql);
+    },
+    getStaffUseRequestsCount:function(id,search){
+        let _sql = `select count(*) from UseRequests where userId = ${id}`;
+        if(search){
+            _sql+=` and deviceCategoryName like '%${search}%' or useDateTime like '%${search}%' or useDescription like '%${search}%'`
+        }
+        _sql+=`;`;
+        return allServices.query(_sql);
+    },
+    //普通员工查看申请记录，归还申请状态
+    getStaffReturnRequests:function(id,page,size,search){
+        let _sql = `select * from ReturnRequests where userId = ${id}`;
+        if(search){
+            _sql+=` and deviceCategoryName like '%${search}%' or deviceDamage like '%${search}%' or deviceDamageDes like '%${search}%' or returnDateTime like '%${search}%'`
+        }
+        if(page&&size){
+            _sql+=` limit ${(page-1)*size},${size}`
+        }
+        _sql+=`;`;
+        return allServices.query(_sql);
+    },
+    getStaffReturnRequestsCount:function(id,search){
+        let _sql = `select count(*) from ReturnRequests where userId = ${id}`;
+        if(search){
+            _sql+=` and deviceCategoryName like '%${search}%' or deviceDamage like '%${search}%' or deviceDamageDes like '%${search}%' or returnDateTime like '%${search}%'`
+        }
+        _sql+=`;`;
+        return allServices.query(_sql);
+    },
+    //echarts图查询损耗情况
+    getDamagesCounts:function(){
+        let _sql = `select deviceCategoryName,count(*) as count from ReturnRequests where deviceDamageDes = '不能继续使用' and status = 1 group by deviceCategoryName;`;
+        return allServices.query(_sql);
+    },
+    //echarts图表查询满意度情况
+    getFeedBack:function(){
+        let _sql = `select deviceFeedBack,count(*) as count from ReturnRequests where status = 1 group by deviceFeedBack; `;
         return allServices.query(_sql);
     }
 }

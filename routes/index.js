@@ -63,14 +63,6 @@ router.get('/getUseRequests',async ctx =>{
     data:result
   }
 });
-
-router.get('/getReturnRequests',async ctx =>{
-  let userId = ctx.query.userId;
-  const result = await userService.getReturnRequests(userId);
-  return ctx.body = {
-    data:result
-  }
-});
 router.get('/getAllDevices',async ctx =>{
   const {currentPage,pageSize,search} = ctx.query;
   const result = await userService.getAllDevices(Number(currentPage),Number(pageSize),search);
@@ -201,6 +193,58 @@ router.post('/modifySomeDevice',async ctx=>{
 router.post('/deleteSomeDevice',async ctx =>{
   const data = ctx.request.body;
   const result = await userService.deleteSomeDevice(data);
+  return ctx.body = {
+    data:result
+  }
+});
+router.post('/getUsersBasic',async ctx=>{
+  const id = ctx.request.body.id;
+  const result = await userService.getUsersBasic(id);
+  return ctx.body = {
+    data:result
+  }
+});
+router.post('/refuseUseApprove',async ctx=>{
+  const data= ctx.request.body;
+  const result = await userService.refuseUseApprove(data);
+  return ctx.body = {
+    data:result
+  }
+});
+router.get('/getStaffUseRequests',async ctx=>{
+  const {userId,currentPage,pageSize,search} = ctx.query;
+  const result = await userService.getStaffUseRequests(userId,currentPage,pageSize,search);
+  const res_total = await userService.getStaffUseRequestsCount(userId,search);
+  const total = res_total[0]['count(*)'];
+  return ctx.body = {
+    data:result,
+    total:total,
+    page:Number(currentPage),
+    size:Number(pageSize),
+    totalPage:Math.ceil(total/pageSize)
+  }
+});
+router.get('/getStaffReturnRequests',async ctx=>{
+  const {userId,currentPage,pageSize,search} = ctx.query;
+  const result = await userService.getStaffReturnRequests(userId,currentPage,pageSize,search);
+  const res_total = await userService.getStaffReturnRequestsCount(userId,search);
+  const total = res_total[0]['count(*)'];
+  return ctx.body = {
+    data:result,
+    total:total,
+    page:Number(currentPage),
+    size:Number(pageSize),
+    totalPage:Math.ceil(total/pageSize)
+  }
+});
+router.get('/getDamagesCounts',async ctx=>{
+  const result = await userService.getDamagesCounts();
+  return ctx.body = {
+    data:result
+  }
+});
+router.get('/getFeedBack',async ctx=>{
+  const result = await userService.getFeedBack();
   return ctx.body = {
     data:result
   }
