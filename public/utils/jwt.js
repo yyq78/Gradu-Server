@@ -11,7 +11,7 @@ class Jwt {
         let cert = "token";
         let token = jwt.sign({
             data,
-        }, cert, { expiresIn:'10h' });
+        }, cert, { expiresIn:'2h' });
 
         return token;
     }
@@ -20,10 +20,10 @@ class Jwt {
         let cert = "token";
         let res;
         try{
-            let result = jwt.verify(token,cert,{algorithms:['RS256']})||{};
-            let {exp = 0} = result,current = Math.floor(Date.now()/1000);
-            if(current<=exp){
-                res = result.data||{};
+            let retToken = token.split(' ')[1];
+            let decoded = jwt.decode(retToken, cert);
+            if(decoded && decoded.exp <= new Date()/1000) {
+                res = 'err'
             }
         }catch(e){
             res = 'err';
