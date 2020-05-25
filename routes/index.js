@@ -248,5 +248,12 @@ router.get('/getFeedBack',async ctx=>{
   return ctx.body = {
     data:result
   }
+});
+router.get('/getStaffUseDevices',async ctx=>{
+  const userId = ctx.query.userId;
+  const result = await userService.getStaffUseDevices(userId);
+  return ctx.body = {
+    data:result
+  }
 })
 module.exports = router
