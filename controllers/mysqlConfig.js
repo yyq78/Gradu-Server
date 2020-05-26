@@ -197,7 +197,6 @@ let allServices = {
     reduceUseApprove: function (data) {
         let _sql1 = `update UseRequests set status = ${1} where requestId = ${data.requestId}`;
         let _sql2 = `update devices set count = count-1 where deviceName = '${data.deviceCategoryName}'`;
-        console.log(_sql1,_sql2);
         return allServices.transaction([_sql1, _sql2]);
     },
     //拒绝申请
@@ -205,7 +204,7 @@ let allServices = {
         let _sql = `update UseRequests set status = ${-1},reason = '${data.reason}' where requestId = ${data.requestId}`;
         return allServices.query(_sql);
     },
-    //审批同意归还申请。更新使用申请状态，该设备数量加一
+    //审批同意归还申请。更新使用申请状态，该设备数量加一,删除借用表中的一条数据
     reduceReturnRequests: function (data) {
         let _sql1 = `update ReturnRequests set status = ${1} where requestId = ${data.requestId}`;
         let _sql2 = `update devices set count = count+1 where deviceName = '${data.deviceCategoryName}'`;
